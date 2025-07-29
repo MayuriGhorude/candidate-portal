@@ -1,13 +1,9 @@
-const mongoose = require('mongoose');
-
-const JobSchema = new mongoose.Schema({
-    title: String,
-    description: String,
-    location: String,
-    postedAt: {
-        type: Date,
-        default: Date.now
-    }
+// backend/models/Job.js
+const jobSchema = new mongoose.Schema({
+  title:       String,
+  description: String,
+  location:    String,
+  type:        { type: String, enum: ['Full-Time', 'Part-Time', 'Contract'] },
+  postedAt:    { type: Date, default: Date.now }
 });
-
-module.exports = mongoose.model('Job', JobSchema);
+module.exports = mongoose.model('Job', jobSchema);

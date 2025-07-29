@@ -11,6 +11,8 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static('uploads')); // Serve uploaded resumes
 
+app.use('/api/auth', require('./routes/auth'));
+
 // Routes
 const jobRoutes = require('./routes/jobs');
 const appRoutes = require('./routes/applications');

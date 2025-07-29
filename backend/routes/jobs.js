@@ -1,26 +1,22 @@
-const express = require('express');
-const router = express.Router();
+// backend/routes/jobs.js
 const Job = require('../models/Job');
+const auth = require('../middleware/auth');
+const router = require('express').Router();
 
-// GET: All jobs
-router.get('/', async (req, res) => {
-    try {
-        const jobs = await Job.find();
-        res.json(jobs);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
+router.get('/', async (_, res) => res.json(await Job.find().sort({ postedAt: -1 })));
+
+router.post('/', auth(['admin']), async (req, res) => {
+  const job = await Job.create(req.body);
+  res.status(201).json(job);
 });
 
-// POST: Add new job
-router.post('/', async (req, res) => {
-    try {
-        const job = new Job(req.body);
-        await job.save();
-        res.status(201).json(job);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
+router.put('/:id', auth(['admin']), async (req, res) => {
+  res.json(await Job.findByIdAndUpdate(req.params.id, req.body, { new: true }));
+});
+
+router.delete('/:id', auth(['admin']), async (req, res) => {
+  await Job.findByIdAndDelete(req.params.id);
+  res.sendStatus(204);
 });
 
 module.exports = router;
