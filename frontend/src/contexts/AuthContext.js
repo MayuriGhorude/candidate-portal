@@ -12,10 +12,10 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const response = await api.post('/auth/login', { email, password });
-      const { token, role, firstName } = response.data;
+      const { token, user: userData } = response.data;
       
       localStorage.setItem('token', token);
-      setUser({ role, firstName, email });
+      setUser(userData);
       return { success: true };
     } catch (error) {
       return { success: false, error: error.response?.data?.message || 'Login failed' };
@@ -39,9 +39,17 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      // You can decode JWT to get user info or make a request to verify
-      // For now, we'll assume user is logged in if token exists
-      setUser({ role: 'student', firstName: 'User' }); // Placeholder
+      // Decode JWT to get user info (simplified)
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        setUser({ 
+          id: payload.id, 
+          role: payload.role,
+          firstName: 'User' // You can enhance this by making an API call
+        });
+      } catch (error) {
+        localStorage.removeItem('token');
+      }
     }
     setLoading(false);
   }, []);

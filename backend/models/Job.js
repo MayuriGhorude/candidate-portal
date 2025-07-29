@@ -1,9 +1,12 @@
-// backend/models/Job.js
+const mongoose = require('mongoose');
+
 const jobSchema = new mongoose.Schema({
-  title:       String,
-  description: String,
-  location:    String,
-  type:        { type: String, enum: ['Full-Time', 'Part-Time', 'Contract'] },
-  postedAt:    { type: Date, default: Date.now }
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  location: { type: String, required: true },
+  type: { type: String, enum: ['Full-Time', 'Part-Time', 'Contract'], required: true },
+  company: { type: String, default: 'Nottingham Building Society' },
+  postedAt: { type: Date, default: Date.now }
 });
+
 module.exports = mongoose.model('Job', jobSchema);
